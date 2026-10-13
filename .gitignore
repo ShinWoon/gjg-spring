@@ -34,3 +34,19 @@ build/
 
 # 개인 파일 깃허브에 업로드 X
 data/
+
+# 로컬 H2 DB 파일
+*.mv.db
+*.trace.db
+
+# 비밀번호, API 키 등 민감 정보
+.env
+application-local.properties
+application-secret.properties
+
+# 로그
+logs/
+*.log
+
+# macOS
+.DS_Store
