@@ -7,12 +7,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WeeklyCheckin {
     
     @Id
@@ -28,6 +29,12 @@ public class WeeklyCheckin {
     private String memo;
 
     public WeeklyCheckin(LocalDate checkDate, Double weightKg, String memo) {
+        this.checkDate = checkDate;
+        this.weightKg = weightKg;
+        this.memo = memo;
+    }
+
+    public void update(LocalDate checkDate, Double weightKg, String memo) {
         this.checkDate = checkDate;
         this.weightKg = weightKg;
         this.memo = memo;
