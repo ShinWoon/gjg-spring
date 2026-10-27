@@ -73,4 +73,16 @@ public class WorkoutSession {
             exerciseLogs.get(i).changeOrderNo(i+1);
         }
     }
+
+    private Long routineId;
+
+    @Column(length = 50)
+    private String routineName;
+
+    public static WorkoutSession fromRoutine(LocalDate sessionDate, Long routineId, String routineName) {
+        WorkoutSession session = new WorkoutSession(sessionDate, SessionType.PERSONAL, null);
+        session.routineId = routineId;
+        session.routineName = routineName;
+        return session;
+    }
 }

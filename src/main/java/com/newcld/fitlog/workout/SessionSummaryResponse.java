@@ -19,9 +19,12 @@ public record SessionSummaryResponse(
     String typeLabel, 
 
     @Schema(description = "세션 메모", example = "하체 데이")
-    String memo
+    String memo,
+
+    @Schema(description = "루틴으로 시작한 경우 루틴 이름", example = "하체 루틴")
+    String routineName
 ) {
     public static SessionSummaryResponse from(WorkoutSession s) {
-        return new SessionSummaryResponse(s.getId(), s.getSessionDate(), s.getType(), s.getType().getLabel(), s.getMemo());
+        return new SessionSummaryResponse(s.getId(), s.getSessionDate(), s.getType(), s.getType().getLabel(), s.getMemo(), s.getRoutineName());
     }
 }
