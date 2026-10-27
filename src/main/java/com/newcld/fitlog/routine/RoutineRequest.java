@@ -21,6 +21,7 @@ public record RoutineRequest(
 
         @Schema(description = "동작 목록 (순서대로). 수정 시에는 이 목록으로 통째로 바뀌어요.")
         @NotNull(message = "동작 목록을 보내주세요.")
+        @Size(max = 30, message = "루틴에는 동작을 30개까지 넣을 수 있어요.")
         @Valid
         List<RoutineItemRequest> items
 ) {}
