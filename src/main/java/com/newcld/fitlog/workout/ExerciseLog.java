@@ -62,4 +62,13 @@ public class ExerciseLog {
     public void addSet(Double weightKg, int reps) {
         sets.add(new SetLog(this, sets.size() + 1, weightKg, reps));
     }
+
+    public void updateFeedback(String feedback, boolean pinned) {
+        this.feedback = feedback;
+        this.pinned = pinned;
+    }
+
+    void changeOrderNo(int orderNo) {
+        this.orderNo = orderNo;
+    }
 }

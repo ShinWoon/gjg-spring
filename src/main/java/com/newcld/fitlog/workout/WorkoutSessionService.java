@@ -53,13 +53,37 @@ public class WorkoutSessionService {
     @Transactional 
     public SessionDetailResponse replaceSets(Long sessionId, Long logId, SetsRequest request) {
         WorkoutSession session = getSession(sessionId);
-        ExerciseLog log = session.getExerciseLogs().stream()
-        .filter(l -> l.getId().equals(logId))
-        .findFirst()
-        .orElseThrow(() -> new NotFoundException("동작 기록을 찾을 수 없어요."));
+        ExerciseLog log = session.findExerciseLog(logId);
 
         log.clearSets();;
         request.sets().forEach(s -> log.addSet(s.weightKg(), s.reps()));
+        sessionRepository.flush();
+        return SessionDetailResponse.from(session);
+    }
+
+    @Transactional
+    public SessionDetailResponse update(Long id, SessionRequest request) {
+        WorkoutSession session = getSession(id);
+        session.update(request.sessionDate(), request.type(), request.memo());
+        return SessionDetailResponse.from(session);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        sessionRepository.delete(getSession(id));
+    }
+
+    @Transactional
+    public SessionDetailResponse updateExerciseLog(Long sessionId, Long logId, ExerciseLogUpdateRequest request) {
+        WorkoutSession session = getSession(sessionId);
+        session.findExerciseLog(logId).updateFeedback(request.feedback(), request.pinned());
+        return SessionDetailResponse.from(session);
+    }
+
+    @Transactional
+    public SessionDetailResponse deleteExerciseLog(Long sessionId, Long logId) {
+        WorkoutSession session = getSession(sessionId);
+        session.removeExerciseLog(session.findExerciseLog(logId));
         sessionRepository.flush();
         return SessionDetailResponse.from(session);
     }

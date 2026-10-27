@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,5 +58,38 @@ public class WorkoutSessionController {
     @PutMapping("/{sessionId}/exercises/{logId}/sets")
     public SessionDetailResponse replaceSets(@Parameter(description = "세션 ID", example = "1") @PathVariable Long sessionId, @Parameter(description = "동작 기록 ID (세션 상세의 exercises 안의 id)", example = "1")  @PathVariable Long logId, @Valid @RequestBody SetsRequest request) {
         return service.replaceSets(sessionId, logId, request);
+    }
+
+    @Operation(summary = "운동 세션 수정", description = "날짜, 운동 종류, 메모를 바꿔요. 없는 세션이면 404를 응답해요.")
+    @PutMapping("/{id}")
+    public SessionDetailResponse update(
+            @Parameter(description = "세션 ID", example = "1") @PathVariable Long id,
+            @Valid @RequestBody SessionRequest request) {
+        return service.update(id, request);
+    }
+
+    @Operation(summary = "운동 세션 삭제", description = "세션에 포함된 동작 기록과 세트까지 모두 삭제돼요. 없는 세션이면 404를 응답해요.")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "세션 ID", example = "1") @PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "동작 기록 피드백 수정", description = "피드백 내용과 고정 여부를 바꿔요. 동작 기록이 해당 세션 소속이 아니면 404를 응답해요.")
+    @PutMapping("/{sessionId}/exercises/{logId}")
+    public SessionDetailResponse updateExerciseLog(
+            @Parameter(description = "세션 ID", example = "1") @PathVariable Long sessionId,
+            @Parameter(description = "동작 기록 ID", example = "1") @PathVariable Long logId,
+            @Valid @RequestBody ExerciseLogUpdateRequest request) {
+        return service.updateExerciseLog(sessionId, logId, request);
+    }
+
+    @Operation(summary = "동작 기록 삭제", description = "동작 기록과 세트를 삭제하고, 남은 동작의 순서를 1부터 다시 매겨요.")
+    @DeleteMapping("/{sessionId}/exercises/{logId}")
+    public SessionDetailResponse deleteExerciseLog(
+            @Parameter(description = "세션 ID", example = "1") @PathVariable Long sessionId,
+            @Parameter(description = "동작 기록 ID", example = "1") @PathVariable Long logId) {
+        return service.deleteExerciseLog(sessionId, logId);
     }
 }

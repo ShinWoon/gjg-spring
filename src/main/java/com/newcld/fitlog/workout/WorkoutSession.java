@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.newcld.fitlog.common.NotFoundException;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,5 +52,25 @@ public class WorkoutSession {
         ExerciseLog log = new ExerciseLog(this, exercise, exerciseLogs.size() + 1, feedback);
         exerciseLogs.add(log);
         return log;
+    }
+
+    public void update(LocalDate sessionDate, SessionType type, String memo) {
+        this.sessionDate = sessionDate;
+        this.type = type;
+        this.memo = memo;
+    }
+
+    public ExerciseLog findExerciseLog(Long logId) {
+        return exerciseLogs.stream()
+        .filter(l -> l.getId().equals(logId))
+        .findFirst()
+        .orElseThrow(() -> new NotFoundException("동작 기록을 찾을 수 없어요."));
+    }
+
+    public void removeExerciseLog(ExerciseLog log) {
+        exerciseLogs.remove(log);
+        for(int i=0; i<exerciseLogs.size(); i++) {
+            exerciseLogs.get(i).changeOrderNo(i+1);
+        }
     }
 }
