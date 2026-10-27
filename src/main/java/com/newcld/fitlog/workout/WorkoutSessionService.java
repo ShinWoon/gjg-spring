@@ -49,4 +49,18 @@ public class WorkoutSessionService {
         return sessionRepository.findById(id)
         .orElseThrow(() -> new NotFoundException("운동 기록을 찾을 수 없어요."));
     }
+
+    @Transactional 
+    public SessionDetailResponse replaceSets(Long sessionId, Long logId, SetsRequest request) {
+        WorkoutSession session = getSession(sessionId);
+        ExerciseLog log = session.getExerciseLogs().stream()
+        .filter(l -> l.getId().equals(logId))
+        .findFirst()
+        .orElseThrow(() -> new NotFoundException("동작 기록을 찾을 수 없어요."));
+
+        log.clearSets();;
+        request.sets().forEach(s -> log.addSet(s.weightKg(), s.reps()));
+        sessionRepository.flush();
+        return SessionDetailResponse.from(session);
+    }
 }

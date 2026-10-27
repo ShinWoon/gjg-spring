@@ -1,5 +1,9 @@
 package com.newcld.fitlog.workout;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,5 +49,17 @@ public class ExerciseLog {
         this.exercise = exercise;
         this.orderNo = orderNo;
         this.feedback = feedback;
+    }
+
+    @OneToMany(mappedBy = "exerciseLog", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("setNo ASC")
+    private List<SetLog> sets = new ArrayList<>();
+
+    public void clearSets() {
+        sets.clear();
+    }
+
+    public void addSet(Double weightKg, int reps) {
+        sets.add(new SetLog(this, sets.size() + 1, weightKg, reps));
     }
 }

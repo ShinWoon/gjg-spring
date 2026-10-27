@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -43,5 +44,10 @@ public class WorkoutSessionController {
     @PostMapping("/{id}/exercises")
     public ResponseEntity<SessionDetailResponse> addExercise(@PathVariable Long id, @Valid @RequestBody ExerciseLogRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.addExerciseLog(id, request));
+    }
+
+    @PutMapping("/{sessionId}/exercises/{logId}/sets")
+    public SessionDetailResponse replaceSets(@PathVariable Long sessionId, @PathVariable Long logId, @Valid @RequestBody SetsRequest request) {
+        return service.replaceSets(sessionId, logId, request);
     }
 }
