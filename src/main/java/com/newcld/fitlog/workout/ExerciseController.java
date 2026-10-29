@@ -50,5 +50,14 @@ public class ExerciseController {
     @PathVariable Long id, @Valid @RequestBody ExerciseRequest request) {
         return ExerciseResponse.from(service.update(id, request));
     }
-    
+
+    @Operation(summary = "동작별 지난 기록", description = "세트 입력 화면에서 참고할 이 동작의 지난 기록을 최신순으로 조회해요. 세트가 없는 기록은 빠져요. 없는 동작이면 404, 조회 개수가 1~20을 벗어나면 400을 응답해요.")
+    @GetMapping("/{id}/history")
+    public List<ExerciseHistoryResponse> history(
+            @Parameter(description = "동작 ID", example = "1") @PathVariable Long id,
+            @Parameter(description = "조회할 기록 수 (1~20)", example = "5") @RequestParam(defaultValue = "5") int limit,
+            @Parameter(description = "제외할 세션 ID. 지금 입력 중인 세션을 빼고 볼 때 사용 (생략 가능)", example = "12") @RequestParam(required = false) Long excludeSessionId) {
+        return service.findHistory(id, limit, excludeSessionId);
+    }
+
 }
