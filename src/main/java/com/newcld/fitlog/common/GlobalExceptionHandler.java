@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -58,6 +59,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse("요청 값이 올바르지 않아요."));
+    }
+
+    // 필수 @RequestParam이 빠지면 이 예외가 나요. 처리하지 않으면 아래 Exception 핸들러로 가서 500이 돼요
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParam(MissingServletRequestParameterException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse("필수 값이 빠졌어요: " + e.getParameterName()));
     }
 
     @ExceptionHandler(BadRequestException.class)
